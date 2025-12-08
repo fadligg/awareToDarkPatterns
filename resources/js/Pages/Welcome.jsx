@@ -58,13 +58,16 @@ export default function Welcome() {
                 ${showNavbar ? 'translate-y-0' : '-translate-y-full'}`}
             >
                 <div className="max-w-7xl mx-auto flex justify-between items-center">
-                    <div className="text-xl font-bold tracking-tight text-gray-900">
-                        Dark Pattern
-                    </div>
+                    <Link href="/">
+                        <div className="text-xl font-bold tracking-tight text-gray-900">
+                            Dark Pattern
+                        </div>
+                    </Link>
                     
                     {/* Menu Kanan */}
                     <div className="hidden md:flex space-x-8 text-sm font-medium">
                         {/* ⚠️ TAMBAHKAN 'onClick={handleNavClick}' DI SETIAP LINK MENU */}
+                        <Link href="/"><a onClick={handleNavClick} className="hover:text-yellow-500 transition">Home</a></Link>
                         <a href="#developer" onClick={handleNavClick} className="hover:text-yellow-500 transition">Developer Mode</a>
                         <a href="#user" onClick={handleNavClick} className="hover:text-yellow-500 transition">User Mode</a>
                         <a href="#game" onClick={handleNavClick} className="hover:text-yellow-500 transition">Game</a>
@@ -84,9 +87,11 @@ export default function Welcome() {
                             <p className="text-gray-600 mb-8 leading-relaxed">
                                 Panduan membangun teknologi yang etis, transparan, dan nyaman bagi pengguna.
                             </p>
-                            <button className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105">
-                                Mulai Belajar
-                            </button>
+                            <Link href="/developer-mode">
+                                <button className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105">
+                                    MULAI
+                                </button>
+                            </Link>
                         </div>
                         <div className="flex justify-center">
                             <img src="/img/devMode.png" alt="Developer Mode" className="w-full max-w-md" onError={(e) => e.target.src='https://placehold.co/400'} />
@@ -105,9 +110,11 @@ export default function Welcome() {
                             <p className="text-gray-600 mb-8 leading-relaxed">
                                 Panduan bagi pengguna untuk mengenali dan mewaspadai adanya dark pattern.
                             </p>
+                            <Link href="/user-mode">
                             <button className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 px-8 rounded-full shadow-lg transition transform hover:scale-105 uppercase">
                                 Mulai
                             </button>
+                            </Link>
                         </div>
                     </div>
                 </section>
