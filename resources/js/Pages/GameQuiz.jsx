@@ -1,222 +1,171 @@
+// resources/js/Pages/GameQuiz.jsx
+
 import React, { useState } from 'react';
-import { Head, router, Link } from '@inertiajs/react';
-import Swal from 'sweetalert2';
+import { Head, usePage, router, Link } from '@inertiajs/react';
 
-export default function GameQuiz({ initialLeaderboard }) {
+export default function GameQuiz({ leaderboard, questions }) { 
+    const { auth } = usePage().props;
+
+    // --- PENGAMAN 1: CEK LOGIN (Mencegah White Screen Error) ---
+    // Jika user belum login, tampilkan pesan suruh login
+    if (!auth.user) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-white text-gray-900 font-sans p-6 text-center">
+                <div className="text-6xl mb-4">🔒</div>
+                <h1 className="text-3xl font-bold mb-2">Akses Dibatasi</h1>
+                <p className="text-gray-600 mb-6">
+                    Kamu harus Login terlebih dahulu untuk bermain dan menyimpan skor.
+                </p>
+                <div className="flex gap-4">
+                    <Link href="/login" className="bg-yellow-400 text-black px-6 py-3 rounded-full font-bold hover:bg-yellow-500 transition shadow-md">
+                        Login Sekarang
+                    </Link>
+                    <Link href="/register" className="bg-black text-white px-6 py-3 rounded-full font-bold hover:bg-gray-800 transition shadow-md">
+                        Daftar Akun
+                    </Link>
+                </div>
+                <div className="mt-8">
+                    <Link href="/" className="text-gray-400 hover:text-gray-600 text-sm font-bold">Kembali ke Home</Link>
+                </div>
+            </div>
+        );
+    }
+
+    // Kalau sudah lolos cek di atas, aman untuk ambil nama
+    const playerName = auth.user.name;
+
+    // --- PENGAMAN 2: CEK DATA SOAL ---
+    // Jika database soal masih kosong
+    if (!questions || questions.length === 0) {
+        return (
+            <div className="min-h-screen flex flex-col items-center justify-center bg-white text-gray-900 font-sans p-6 text-center">
+                <div className="text-6xl mb-4">⚠️</div>
+                <h1 className="text-3xl font-bold mb-2">Soal Tidak Ditemukan</h1>
+                <p className="text-gray-600 mb-6">
+                    Database soal belum diisi. Silakan jalankan perintah ini di terminal:
+                </p>
+                <code className="bg-gray-100 p-3 rounded-lg font-mono text-sm block mb-6 border border-gray-300 shadow-sm">
+                    php artisan db:seed --class=QuestionSeeder
+                </code>
+                <Link href="/" className="text-yellow-600 font-bold hover:underline">Kembali ke Home</Link>
+            </div>
+        );
+    }
+
     // --- STATE GAME ---
-    const [gameState, setGameState] = useState('start'); // 'start', 'playing', 'finished'
-    const [nickname, setNickname] = useState('');
-    const [score, setScore] = useState(0);
+    const [gameState, setGameState] = useState('start'); 
     const [currentQuestion, setCurrentQuestion] = useState(0);
+    const [score, setScore] = useState(0);
 
-    // --- DATA SOAL ---
-    const questions = [
-        {
-            q: "Diskon palsu yang hitung mundur terus menerus disebut?",
-            opts: ["False Urgency", "Roach Motel", "Misdirection"],
-            a: "False Urgency"
-        },
-        {
-            q: "Susah banget cari tombol 'Unsubscribe', ini pola apa?",
-            opts: ["Roach Motel", "Privacy Zuckering", "Confirmshaming"],
-            a: "Roach Motel"
-        },
-        {
-            q: "Tiba-tiba ada asuransi masuk keranjang belanja tanpa izin?",
-            opts: ["Sneak into Basket", "Hidden Costs", "Nagging"],
-            a: "Sneak into Basket"
-        },
-        {
-            q: "Website mempermalukanmu saat menolak tawaran ('No, I hate saving money').",
-            opts: ["Confirmshaming", "Disguised Ads", "Bait and Switch"],
-            a: "Confirmshaming"
-        },
-        {
-            q: "Tombol iklan didesain mirip tombol download asli.",
-            opts: ["Disguised Ads", "Misdirection", "Forced Action"],
-            a: "Disguised Ads"
-        }
-    ];
-
-    // --- LOGIC ---
-    const startGame = () => {
-        if (!nickname.trim()) {
-            // Ganti alert() dengan Swal.fire()
-            Swal.fire({
-                icon: 'warning',
-                title: 'Oops...',
-                text: 'Isi nickname dulu dong biar bisa masuk leaderboard! 🏆',
-                confirmButtonText: 'Siap!',
-                confirmButtonColor: '#FACC15', // Warna Yellow-400
-                background: '#fff',
-                color: '#333'
-            });
-            return;
-        }
+    // --- LOGIKA GAME ---
+    const handleStartGame = () => {
+        setGameState('playing');
         setScore(0);
         setCurrentQuestion(0);
-        setGameState('playing');
     };
 
-    const handleAnswer = (selectedOption) => {
-        if (selectedOption === questions[currentQuestion].a) {
-            setScore(score + 20);
+    const handleAnswer = (selectedOptionText) => {
+        const currentQ = questions[currentQuestion];
+        let newScore = score;
+
+        // Cek Jawaban (Bandingkan Teks Pilihan vs Kunci Jawaban dari DB)
+        if (selectedOptionText === currentQ.correct_answer) {
+            newScore = score + 10; 
+            setScore(newScore);    
         }
 
-        const next = currentQuestion + 1;
-        if (next < questions.length) {
-            setCurrentQuestion(next);
+        const nextQuestion = currentQuestion + 1;
+        
+        if (nextQuestion < questions.length) {
+            setCurrentQuestion(nextQuestion);
         } else {
-            finishGame(score + (selectedOption === questions[currentQuestion].a ? 20 : 0));
+            finishGame(newScore);
         }
     };
 
     const finishGame = (finalScore) => {
-        setScore(finalScore);
         setGameState('finished');
         
-        // Kirim ke Database via Inertia
         router.post('/game/score', {
-            nickname: nickname,
-            score: finalScore
+            score: finalScore, 
         }, {
-            onSuccess: () => {
-                // Balik ke menu awal setelah simpan (3 detik)
-                setTimeout(() => setGameState('start'), 3000);
-            }
+            preserveScroll: true,
         });
     };
 
+    const handleRestart = () => {
+        window.location.reload(); // Refresh halaman untuk dapat soal acak baru
+    };
+
     return (
-        // PERBAIKAN DISINI: Menambahkan 'overflow-y-auto' dan 'pb-40' agar bisa discroll sampai bawah
-        <div className="min-h-screen bg-white text-gray-800 font-sans overflow-y-auto pb-40">
-            <Head title="Game Dark Pattern" />
+        <div className="min-h-screen bg-white text-gray-900 font-sans flex flex-col items-center justify-center p-6">
+            <Head title="Game Quiz" />
 
-            {/* --- NAVBAR SIMPEL (Dibuat Sticky biar tetep nempel diatas pas discroll) --- */}
-            <div className="sticky top-0 z-50 bg-white/90 backdrop-blur flex items-center p-6 mb-4 border-b border-gray-100 shadow-sm">
-                
-                {/* Tombol Kembali (Lingkaran Kuning) */}
-                <Link href="/">
-                    <div className="w-10 h-10 bg-yellow-400 rounded-full mr-4 flex items-center justify-center hover:bg-yellow-500 hover:scale-110 transition-all cursor-pointer shadow-sm">
-                        {/* Masukkan gambar panah disini */}
+            {/* --- LAYAR AWAL (START + LEADERBOARD) --- */}
+            {gameState === 'start' && (
+                // LAYOUT: 1 Kolom di HP/Tablet, 2 Kolom di Laptop (lg)
+                <div className="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-2 gap-10 items-center animate-fade-in-down">
+                    
+                    {/* Kolom Kiri: Intro Game */}
+                    <div className="flex flex-col items-center text-center lg:items-start lg:text-left order-1 lg:order-1">
                         <img 
-                            src="/img/arrow-left.png" 
-                            alt="Back" 
-                            className="w-4 h-4 object-contain" 
-                            // Fallback kalau gambar belum ada, pakai teks "<"
-                            onError={(e) => {e.target.style.display='none'; e.target.parentNode.innerText='<'}}
+                            src="/img/gameQuiz.png" 
+                            alt="Quiz" 
+                            className="w-64 mb-6 object-contain mx-auto lg:mx-0" 
+                            onError={(e) => e.target.src='https://placehold.co/300'} 
                         />
-                    </div>
-                </Link>
-
-                <h1 className="text-2xl font-bold">Game</h1>
-            </div>
-
-            <div className="max-w-6xl mx-auto px-6">
-                
-                {/* --- AREA UTAMA (HERO) --- */}
-                
-                {gameState === 'start' && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-20 pt-8">
-                        {/* KIRI: Gambar Ilustrasi */}
-                        <div className="flex justify-center">
-                            <img 
-                                src="/img/gameQuiz.png" 
-                                alt="Game Illustration" 
-                                // PERBAIKAN: Dikasih max-height biar gambarnya gak kegedean menuhin layar
-                                className="w-full max-w-md object-contain max-h-[400px]"
-                                onError={(e) => e.target.src = 'https://placehold.co/500x500/png?text=Illustration'} 
-                            />
-                        </div>
-
-                        {/* KANAN: Form Input */}
-                        <div>
-                            <label className="block text-4xl font-bold italic mb-4 font-serif">Nickname</label>
-                            <input 
-                                type="text" 
-                                placeholder="Nama Anda" 
-                                className="w-full border border-gray-300 rounded-lg px-6 py-4 text-xl mb-6 focus:outline-none focus:border-yellow-500 bg-gray-50 shadow-inner"
-                                value={nickname}
-                                onChange={(e) => setNickname(e.target.value)}
-                            />
-                            <button 
-                                onClick={startGame}
-                                className="w-full bg-yellow-400 hover:bg-yellow-500 text-black text-xl font-bold py-4 rounded-lg shadow-lg transition transform hover:scale-105 active:scale-95"
-                            >
-                                Play Quiz
-                            </button>
-                        </div>
-                    </div>
-                )}
-
-                {/* --- GAMEPLAY AREA --- */}
-                {gameState === 'playing' && (
-                    <div className="max-w-2xl mx-auto text-center py-20 min-h-[50vh]">
-                        <div className="mb-8">
-                            <span className="text-yellow-500 font-bold tracking-widest text-sm uppercase">Pertanyaan {currentQuestion + 1} dari {questions.length}</span>
-                            <h2 className="text-3xl font-bold mt-4 mb-8 leading-relaxed">{questions[currentQuestion].q}</h2>
-                        </div>
-                        <div className="grid gap-4">
-                            {questions[currentQuestion].opts.map((opt, idx) => (
-                                <button 
-                                    key={idx} 
-                                    onClick={() => handleAnswer(opt)}
-                                    className="p-5 rounded-xl border-2 border-gray-100 hover:border-yellow-400 hover:bg-yellow-50 text-left font-bold text-lg transition duration-200 shadow-sm"
-                                >
-                                    {opt}
-                                </button>
-                            ))}
-                        </div>
-                    </div>
-                )}
-
-                {/* --- RESULT AREA --- */}
-                {gameState === 'finished' && (
-                    <div className="text-center py-20 min-h-[50vh]">
-                        <h2 className="text-4xl font-bold mb-4">Game Selesai! 🎉</h2>
-                        <p className="text-xl text-gray-600 mb-8">Skor kamu sedang disimpan ke database...</p>
-                        <div className="inline-block bg-gray-900 rounded-2xl p-10 shadow-2xl">
-                             <div className="text-8xl font-black text-yellow-500">{score}</div>
-                             <div className="text-white mt-2">Poin Akhir</div>
-                        </div>
-                    </div>
-                )}
-
-                {/* --- LEADERBOARD HARIAN --- */}
-                {gameState === 'start' && (
-                    <div className="mt-12 border-t-2 border-gray-100 pt-12">
-                        <div className="flex justify-between items-center mb-8">
-                            <h3 className="text-3xl font-bold flex items-center">
-                                🏆 Leaderboard Harian
-                            </h3>
-                            <span className="text-xs bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full font-bold">Top 10 Hari Ini</span>
-                        </div>
                         
-                        <div className="overflow-hidden bg-white rounded-2xl shadow-xl border border-gray-200">
-                            <table className="w-full text-left border-collapse">
-                                <thead className="bg-gray-50 border-b border-gray-200">
+                        <h1 className="text-4xl font-bold mb-4 text-gray-900">Dark Pattern Quiz</h1>
+                        <p className="text-lg text-gray-600 mb-8 leading-relaxed max-w-md mx-auto lg:mx-0">
+                            Halo, <span className="font-bold text-yellow-500">{playerName}</span>! <br/>
+                            Ayo buktikan seberapa jago kamu mengenali trik licik desain.
+                        </p>
+
+                        <button 
+                            onClick={handleStartGame}
+                            className="bg-yellow-400 hover:bg-yellow-500 text-black font-bold py-3 px-12 rounded-full shadow-lg transition transform hover:scale-105 text-lg"
+                        >
+                            MULAI MAIN
+                        </button>
+                        
+                        <div className="mt-6">
+                             <Link href="/" className="text-gray-400 hover:text-gray-600 font-bold text-sm">Kembali ke Home</Link>
+                        </div>
+                    </div>
+
+                    {/* Kolom Kanan: LEADERBOARD */}
+                    <div className="order-2 lg:order-2 w-full max-w-lg mx-auto lg:mx-0 bg-white border-2 border-gray-100 rounded-2xl shadow-xl overflow-hidden h-fit">
+                        <div className="bg-black text-white p-4 text-center">
+                            <h2 className="text-xl font-bold uppercase tracking-widest">🏆 Top Players</h2>
+                        </div>
+                        <div className="p-0">
+                            <table className="w-full text-left">
+                                <thead className="bg-gray-50 border-b border-gray-100">
                                     <tr>
-                                        <th className="px-6 py-5 font-extrabold text-gray-400 uppercase text-xs tracking-wider">Rank</th>
-                                        <th className="px-6 py-5 font-extrabold text-gray-400 uppercase text-xs tracking-wider">Nickname</th>
-                                        <th className="px-6 py-5 font-extrabold text-gray-400 uppercase text-xs tracking-wider text-right">Score</th>
+                                        <th className="px-5 py-3 text-xs font-bold text-gray-500 uppercase">Rank</th>
+                                        <th className="px-5 py-3 text-xs font-bold text-gray-500 uppercase">Player</th>
+                                        <th className="px-5 py-3 text-xs font-bold text-gray-500 uppercase text-right">Score</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {initialLeaderboard.length > 0 ? (
-                                        initialLeaderboard.map((player, index) => (
-                                            <tr key={player.id} className="hover:bg-yellow-50 transition duration-150">
-                                                <td className="px-6 py-5 font-medium text-gray-500">
+                                <tbody className="divide-y divide-gray-100 text-sm">
+                                    {leaderboard && leaderboard.length > 0 ? (
+                                        leaderboard.map((item, index) => (
+                                            <tr key={index} className={index < 3 ? "bg-yellow-50" : ""}>
+                                                <td className="px-5 py-3 font-bold text-gray-700">
                                                     {index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`}
                                                 </td>
-                                                <td className="px-6 py-5 font-bold text-gray-800 text-lg">{player.nickname}</td>
-                                                <td className="px-6 py-5 font-bold text-yellow-600 text-right text-lg">{player.score}</td>
+                                                <td className="px-5 py-3 font-medium text-gray-900 truncate max-w-[120px]">
+                                                    {item.user ? item.user.name : 'Unknown'}
+                                                </td>
+                                                <td className="px-5 py-3 font-bold text-yellow-600 text-right">
+                                                    {item.score}
+                                                </td>
                                             </tr>
                                         ))
                                     ) : (
                                         <tr>
-                                            <td colSpan="3" className="px-6 py-12 text-center text-gray-400 italic bg-gray-50">
-                                                Belum ada yang main hari ini.<br/>
-                                                <span className="text-sm font-normal">Ayo jadilah yang pertama mengisi leaderboard! 🚀</span>
+                                            <td colSpan="3" className="px-5 py-8 text-center text-gray-400 italic">
+                                                Belum ada skor. Jadilah yang pertama!
                                             </td>
                                         </tr>
                                     )}
@@ -224,9 +173,69 @@ export default function GameQuiz({ initialLeaderboard }) {
                             </table>
                         </div>
                     </div>
-                )}
-                
-            </div>
+                </div>
+            )}
+
+            {/* --- LAYAR MAIN (PLAYING) --- */}
+            {gameState === 'playing' && questions[currentQuestion] && (
+                <div className="w-full max-w-2xl bg-white shadow-xl rounded-2xl overflow-hidden border border-gray-100">
+                    <div className="bg-yellow-400 p-6 flex justify-between items-center">
+                        <span className="font-bold text-lg">Soal {currentQuestion + 1}/{questions.length}</span>
+                        <span className="font-bold text-lg bg-white px-4 py-1 rounded-full">Score: {score}</span>
+                    </div>
+
+                    <div className="p-8">
+                        {/* Pertanyaan */}
+                        <h2 className="text-2xl font-bold mb-8 text-center leading-relaxed">
+                            {questions[currentQuestion].question}
+                        </h2>
+                        
+                        <div className="grid grid-cols-1 gap-4">
+                            {/* Opsi Jawaban */}
+                            {questions[currentQuestion].options && questions[currentQuestion].options.map((optionText, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => handleAnswer(optionText)}
+                                    className="w-full text-left p-4 rounded-xl border-2 border-gray-100 hover:border-yellow-400 hover:bg-yellow-50 transition font-medium text-lg"
+                                >
+                                    {optionText}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* --- LAYAR SELESAI (FINISHED) --- */}
+            {gameState === 'finished' && (
+                <div className="text-center max-w-lg animate-fade-in-down">
+                    <div className="text-6xl mb-4">🎉</div>
+                    <h1 className="text-4xl font-bold mb-2">Permainan Selesai!</h1>
+                    <p className="text-gray-600 text-lg mb-6">
+                        Hebat, <span className="font-bold">{playerName}</span>!
+                    </p>
+
+                    <div className="bg-yellow-50 border-2 border-yellow-400 rounded-2xl p-8 mb-8">
+                        <p className="text-sm text-gray-500 uppercase tracking-widest font-bold mb-2">Skor Akhir Kamu</p>
+                        <p className="text-6xl font-black text-yellow-500">{score}</p>
+                    </div>
+
+                    <div className="flex gap-4 justify-center">
+                        <button 
+                            onClick={handleRestart}
+                            className="bg-black text-white px-6 py-3 rounded-full font-bold hover:bg-gray-800 transition"
+                        >
+                            Main Lagi
+                        </button>
+                        <a 
+                            href="/game" 
+                            className="bg-gray-200 text-gray-800 px-6 py-3 rounded-full font-bold hover:bg-gray-300 transition"
+                        >
+                            Lihat Leaderboard
+                        </a>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -86,13 +86,25 @@ export default function Login({ status, canResetPassword }) {
                             href={route('password.request')}
                             className="rounded-md text-sm text-gray-600 underline hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                         >
-                            Forgot your password?
+                            Lupa password?
                         </Link>
                     )}
 
                     <PrimaryButton className="ms-4" disabled={processing}>
                         Log in
                     </PrimaryButton>
+                </div>
+
+                <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+                    <p className="text-sm text-gray-600">
+                        Belum punya akun?{' '}
+                        <Link
+                            href={route('register')}
+                            className="font-bold text-yellow-600 hover:text-yellow-500 hover:underline transition"
+                        >
+                            Daftar sekarang
+                        </Link>
+                    </p>
                 </div>
             </form>
         </GuestLayout>

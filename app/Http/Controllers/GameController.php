@@ -2,42 +2,64 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Leaderboard;
+
+use App\Models\Score; // <-- Pastikan ini ada
+use App\Models\Question;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Carbon\Carbon;
 
 class GameController extends Controller
 {
+    // Halaman Game + Leaderboard
     public function index()
     {
-        // Ambil 10 skor tertinggi HARI INI
-        $leaderboard = Leaderboard::whereDate('created_at', Carbon::today())
+        // 1. Ambil Leaderboard
+        $leaderboard = Score::with('user')
                         ->orderBy('score', 'desc')
-                        ->orderBy('created_at', 'asc') // Kalau skor sama, yg duluan main di atas
                         ->take(10)
                         ->get();
 
+        // 2. AMBIL 10 SOAL ACAK & ACAK OPSINYA
+        $rawQuestions = Question::inRandomOrder()->take(10)->get();
+
+        // Kita modifikasi struktur datanya sebelum dikirim ke React
+        $formattedQuestions = $rawQuestions->map(function ($q) {
+            // Ambil teks jawaban benar DULU sebelum diacak (berdasarkan index di DB)
+            // $q->options adalah array, $q->answer adalah index (0,1,2,3)
+            $correctAnswerText = $q->options[$q->answer];
+
+            // Acak urutan opsi menggunakan Collection Laravel
+            $shuffledOptions = collect($q->options)->shuffle()->values()->all();
+
+            return [
+                'id' => $q->id,
+                'question' => $q->question,
+                'options' => $shuffledOptions, // Opsi yang sudah acak
+                'correct_answer' => $correctAnswerText, // KUNCI JAWABAN (String)
+            ];
+        });
+
         return Inertia::render('GameQuiz', [
-            'initialLeaderboard' => $leaderboard
+            'leaderboard' => $leaderboard,
+            'questions'   => $formattedQuestions 
         ]);
     }
 
+    // Simpan Skor Baru
     public function store(Request $request)
     {
         // Validasi input
         $request->validate([
-            'nickname' => 'required|string|max:20',
-            'score' => 'required|integer'
+            'score' => 'required|integer',
         ]);
 
         // Simpan ke database
-        Leaderboard::create([
-            'nickname' => $request->nickname,
-            'score' => $request->score
+        Score::create([
+            'user_id' => auth()->id(), // Ambil ID user yg login otomatis
+            'score' => $request->score,
         ]);
 
-        // Redirect balik ke halaman game (otomatis refresh leaderboard)
-        return to_route('game.index');
+        // Redirect balik ke game (skor otomatis ke-refresh)
+        return redirect()->back();
     }
 }
