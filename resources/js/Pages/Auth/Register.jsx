@@ -114,6 +114,14 @@ export default function Register() {
                         Register
                     </PrimaryButton>
                 </div>
+                <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+                    <Link 
+                        href="/" 
+                        className="inline-flex items-center text-sm text-gray-400 hover:text-gray-900 transition"
+                    >
+                        <span className="mr-2">&larr;</span> Kembali ke Home
+                    </Link>
+                </div>
             </form>
         </GuestLayout>
     );

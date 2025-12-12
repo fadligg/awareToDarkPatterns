@@ -105,6 +105,12 @@ export default function Login({ status, canResetPassword }) {
                             Daftar sekarang
                         </Link>
                     </p>
+                    <Link 
+                        href="/" 
+                        className="inline-flex items-center text-sm text-gray-400 hover:text-gray-900 transition mt-2"
+                    >
+                        <span className="mr-2">&larr;</span> Kembali ke Home
+                    </Link>
                 </div>
             </form>
         </GuestLayout>
