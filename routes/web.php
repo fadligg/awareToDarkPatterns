@@ -5,6 +5,7 @@ use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\GameController;
 use Inertia\Inertia;
+use App\Models\DarkPattern;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -43,5 +44,19 @@ Route::get('/types', function () {
 Route::get('/user-mode', function () {
     return Inertia::render('UserMode');
 })->name('user.mode');
+
+Route::get('/types/{id}', function ($id) {
+    // Ambil data dasar (Title & Description) dari database yang sudah ada
+    $pattern = DarkPattern::findOrFail($id);
+    
+    return Inertia::render('DarkPatternDetail', [
+        'pattern' => $pattern
+    ]);
+})->name('types.detail');
+
+// Route untuk List User
+Route::get('/types-user', function () {
+    return Inertia::render('DarkPatternTypesUser');
+})->name('user.types.list');
 
 require __DIR__.'/auth.php';
