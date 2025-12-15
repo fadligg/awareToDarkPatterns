@@ -76,32 +76,38 @@ cd dark-pattern-awareness
 ```
 
 ### Langkah 2: Install Dependencies 
+```bash
 composer install
 npm install
-
+```
 ### Langkah 3: Konfigurasi Environment
+```bash
 cp .env.example .env
-
+```
+```bash
 DB_CONNECTION=mysql
 DB_HOST=127.0.0.1
 DB_PORT=3306
 DB_DATABASE=dark_pattern_db
 DB_USERNAME=root
 DB_PASSWORD=
-
+```
 ### Langkah 4: Generate Key & Migrasi Database
+```bash
 php artisan key:generate
 php artisan migrate
 php artisan db:seed
-
+```
 ## ⏯️ Cara Menjalankan Aplikasi
 
 ### Terminal 1
+```bash
 php artisan serve
-
+```
 ### Terminal 2
+```bash
 npm run dev
-
+```
 
 ## 👥 Tim Pengembang
 
