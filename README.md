@@ -1,8 +1,6 @@
-<img 
-    style="display: block; margin: 0 auto;"
-    width="250" 
-    height="250" 
-    alt="logoooo" src="https://github.com/user-attachments/assets/b07a46b5-e7aa-442d-8f0e-f8dc7d2f9c80" />
+<div style="text-align: center;">
+  <img width="250" height="250" alt="logoooo" src="https://github.com/user-attachments/assets/b07a46b5-e7aa-442d-8f0e-f8dc7d2f9c80" />
+</div>
 
 # Dark Pattern Awareness Platform 🕵️‍♂️🚫
 
