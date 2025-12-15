@@ -115,7 +115,7 @@ Berikut adalah kontributor yang mengerjakan proyek **Dark Pattern Awareness**:
 
 | Nama Anggota | Peran (*Role*) | Kontak |
 | :--- | :--- | :--- |
-| **Fadli Haidar Nugraha** | Lead & Fullstack Developer | [@dleehh_](https://instagram.com/dleehh_) |
+| **Fadli Haidar Nugraha** | Fullstack Developer | [@dleehh_](https://instagram.com/dleehh_) |
 | **M. Dyo Rijki Fadillah** | UI/UX Designer | [@dyoo.rf](https://instagram.com/dyoo.rf) |
 | **Irsyad Adfiansha Hidayat** | UI/UX Designer | [@adfsh000](https://instagram.com/adfsh000) |
 | **M. Dantha Arianvasya** | Content Researcher | [@danthaarian](https://instagram.com/danthaarian) |
