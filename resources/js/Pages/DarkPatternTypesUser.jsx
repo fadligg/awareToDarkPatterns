@@ -470,7 +470,7 @@ export default function DarkPatternTypesUser() {
 
     return (
         <div className="min-h-screen bg-white text-gray-900 font-sans">
-            <Head title="Jenis Jebakan (User Mode)" />
+            <Head title="Jenis Dark Pattern (User)" />
 
             {/* --- NAVBAR LENGKAP (User Mode) --- */}
             <nav className={`fixed top-0 w-full z-50 transition-transform duration-300 px-6 md:px-10 py-4 border-b border-gray-100 bg-white/95 backdrop-blur-md shadow-sm ${showNavbar ? 'translate-y-0' : '-translate-y-full'}`}>
