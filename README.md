@@ -1,59 +1,122 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Dark Pattern Awareness Platform 🕵️‍♂️🚫
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+**Dark Pattern Awareness** adalah platform edukasi interaktif berbasis web yang bertujuan untuk meningkatkan literasi digital pengguna internet dan pengembang (*developer*) mengenai *Deceptive Design Patterns* (Pola Desain Menipu/Gelap).
 
-## About Laravel
+Aplikasi ini menggabungkan dokumentasi teknis, simulasi interaktif, dan gamifikasi untuk membantu pengguna mengenali dan menghindari manipulasi antarmuka digital.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+![Project Status](https://img.shields.io/badge/status-active-success.svg)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 📋 Daftar Isi
+- [Fitur Utama](#-fitur-utama)
+- [Teknologi yang Digunakan](#-teknologi-yang-digunakan)
+- [Persyaratan Sistem](#-persyaratan-sistem-prerequisites)
+- [Panduan Instalasi](#-panduan-instalasi-setup-guide)
+- [Cara Menjalankan](#-cara-menjalankan-aplikasi)
+- [Tim Pengembang](#-tim-pengembang)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## ✨ Fitur Utama
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### 🛠 A. Developer Mode
+Panduan teknis mendalam yang dikhususkan untuk pengembang UI/UX dan Product Designer.
+- **Dokumentasi Teknis:** Definisi mendalam tentang 16 jenis *dark pattern*.
+- **Ethical Guidelines:** Panduan implementasi kode dan desain yang etis.
+- **Library Reference:** Katalog pola desain yang harus dihindari sesuai standar hukum (UU ITE/GDPR).
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 👥 B. User Mode
+Edukasi ramah pengguna untuk masyarakat umum agar lebih waspada.
+- **Simulasi Interaktif:** Kartu interaktif yang membandingkan "Dark Pattern" vs "Ethical Design" secara visual.
+- **Tips Pencegahan:** Strategi praktis menghindari jebakan biaya tersembunyi, *forced action*, dll.
+- **Bahasa Sederhana:** Penjelasan non-teknis yang mudah dipahami.
 
-## Laravel Sponsors
+### 🎮 C. Game Quiz & Leaderboard
+Uji pemahaman pengguna melalui kuis interaktif yang menyenangkan.
+- **Sistem Poin:** Dapatkan skor untuk setiap jawaban benar.
+- **Leaderboard Real-time:** Papan peringkat Harian dan Bulanan untuk memacu kompetisi.
+- **Feedback Langsung:** Pembahasan instan muncul setelah menjawab soal.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+---
 
-### Premium Partners
+## 💻 Teknologi yang Digunakan
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+Aplikasi ini dibangun dengan stack modern **Monolith-Inertia**:
 
-## Contributing
+- **Backend:** [Laravel 10/11](https://laravel.com) (PHP Framework)
+- **Frontend:** [React.js](https://reactjs.org) (JavaScript Library)
+- **Adapter:** [Inertia.js](https://inertiajs.com) (Penghubung Laravel & React)
+- **Styling:** [Tailwind CSS](https://tailwindcss.com)
+- **Database:** MySQL
+- **Build Tool:** Vite
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## ⚙️ Persyaratan Sistem (Prerequisites)
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Sebelum melakukan instalasi, pastikan perangkat kamu telah terinstal:
 
-## Security Vulnerabilities
+* PHP >= 8.2
+* Composer
+* Node.js & NPM
+* MySQL Database
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+## 🚀 Panduan Instalasi (Setup Guide)
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Ikuti langkah-langkah berikut untuk menjalankan proyek ini di komputer lokal (Localhost):
+
+### Langkah 1: Clone Repositori
+Buka terminal dan jalankan perintah:
+
+```bash
+git clone [https://github.com/fadligg/awareToDarkPatterns.git](https://github.com/fadligg/awareToDarkPatterns.git)
+cd dark-pattern-awareness
+```
+
+### Langkah 2: Install Dependencies 
+```bash
+composer install
+npm install
+```
+### Langkah 3: Konfigurasi Environment
+```bash
+cp .env.example .env
+```
+```bash
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=dark_pattern_db
+DB_USERNAME=root
+DB_PASSWORD=
+```
+### Langkah 4: Generate Key & Migrasi Database
+```bash
+php artisan key:generate
+php artisan migrate
+php artisan db:seed
+```
+## ⏯️ Cara Menjalankan Aplikasi
+
+### Terminal 1
+```bash
+php artisan serve
+```
+### Terminal 2
+```bash
+npm run dev
+```
+
+## 👥 Tim Pengembang
+
+Berikut adalah kontributor yang mengerjakan proyek **Dark Pattern Awareness**:
+
+| Nama Anggota | Peran (*Role*) | Kontak |
+| :--- | :--- | :--- |
+| **Fadli Haidar Nugraha** | Fullstack Developer | [@dleehh_](https://instagram.com/dleehh_) |
+| **M. Dyo Rijki Fadillah** | UI/UX Designer | [@dyoo.rf](https://instagram.com/dyoo.rf) |
+| **Irsyad Adfiansha Hidayat** | UI/UX Designer | [@adfsh000](https://instagram.com/adfsh000) |
+| **M. Dantha Arianvasya** | Content Researcher | [@danthaarian](https://instagram.com/danthaarian) |
+
