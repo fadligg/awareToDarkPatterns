@@ -1,4 +1,4 @@
-<img width="500" height="500" alt="logoooo" src="https://github.com/user-attachments/assets/b07a46b5-e7aa-442d-8f0e-f8dc7d2f9c80" />
+<img width="250" height="250" alt="logoooo" src="https://github.com/user-attachments/assets/b07a46b5-e7aa-442d-8f0e-f8dc7d2f9c80" />
 
 # Dark Pattern Awareness Platform 🕵️‍♂️🚫
 
